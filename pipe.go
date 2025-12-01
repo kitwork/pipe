@@ -1,6 +1,8 @@
 package pipe
 
 import (
+	"encoding/json"
+	"fmt"
 	"html/template"
 	"math"
 	"reflect"
@@ -140,6 +142,17 @@ func Dollar(val reflect.Value) reflect.Value {
 }
 
 // Json placeholder function, returns empty reflect.Value
-func Json(reflect.Value) reflect.Value {
-	return reflect.Value{}
+
+func Json(val reflect.Value) reflect.Value {
+	data := val.Interface()
+
+	// Marshal sang JSON string
+	b, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println("json.Marshal error:", err)
+		return reflect.Value{}
+	}
+
+	// Trả về reflect.Value chứa string JSON
+	return reflect.ValueOf(string(b))
 }
