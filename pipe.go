@@ -30,6 +30,12 @@ func Functions() template.FuncMap { // map global
 }
 
 var functions = template.FuncMap{
+	"add":      Add,
+	"sub":      Sub,
+	"mul":      Mul,
+	"div":      Div,
+	"nullish":  Nullish,
+	"ternary":  Ternary,
 	"json":     Json,
 	"thousand": Thousand,
 	"dollar":   Dollar,
@@ -155,4 +161,26 @@ func Json(val reflect.Value) reflect.Value {
 
 	// Trả về reflect.Value chứa string JSON
 	return reflect.ValueOf(string(b))
+}
+
+func RV(v interface{}) reflect.Value {
+	return reflect.ValueOf(v)
+}
+
+func toFloatRV(v reflect.Value) float64 {
+	switch v.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return float64(v.Int())
+	case reflect.Float32, reflect.Float64:
+		return v.Float()
+	case reflect.String:
+		f, _ := strconv.ParseFloat(v.String(), 64)
+		return f
+	case reflect.Bool:
+		if v.Bool() {
+			return 1
+		}
+		return 0
+	}
+	return 0
 }
